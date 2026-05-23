@@ -1,6 +1,5 @@
-============================================================
-       🎟️ README - TICK_EZ 🎟️
-============================================================
+
+               🎟️ README - TICK_EZ 🎟️
 
 Este es el proyecto oficial de nuestra ticketera web con 
 generación de códigos QR, funcionamiento de reproductor 
@@ -8,11 +7,11 @@ Spotify y descarga automática de boletos en PDF.
 
 Para ello deberaas abrir la carpeta WinRAR donde se 
 encuentran todos los archivos con codigos desarrollados que 
-dan creacion al sistema de tickets "Tick_ez"
+dan creacion al sistema de tickets "Tick_ez".
 
-------------------------------------------------------------
+
     CÓMO HACER FUNCIONAR EL PROYECTO EN TU COMPUTADORA
-------------------------------------------------------------
+
 Sigue estos 4 pasos en la terminal de VS Code 
 para encender la página:
 
@@ -33,18 +32,17 @@ Paso 4: Sincronizar e inicializar Reflex
 Escribe y presiona Enter:
 reflex init
 
-------------------------------------------------------------
-🔥 CÓMO ENCENDER EL SERVIDOR
-------------------------------------------------------------
+  CÓMO ENCENDER EL SERVIDOR
+
 Para ver la página web corriendo en tu computadora, escribe:
 reflex run
 
 Luego abre tu navegador de internet e ingresa a:
 http://localhost:3000
 
-------------------------------------------------------------
+
 PARA TENER NOCION
-------------------------------------------------------------
+
 Reflex es un framework de codigo abierto PARA Python que 
 permite crear y desplegar aplicaciones web full-stack 
 (frontend y backend) utilizando unicamente Python.
