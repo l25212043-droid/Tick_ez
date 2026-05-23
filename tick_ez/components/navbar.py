@@ -141,3 +141,26 @@ def navbar() -> rx.Component:
         ),
         class_name="bg-white border-b border-gray-200 sticky top-0 z-30",
     )
+from tick_ez.states.spotify_state import SpotifyState
+
+def reproductor_global() -> rx.Component:
+    return rx.el.div(
+        rx.el.div(
+            # Renderiza el reproductor incrustado usando el track seleccionado en la pestaña de música
+            rx.html(
+                f"""
+                <iframe 
+                    src="{SpotifyState.track_embed_actual}" 
+                    width="100%" 
+                    height="80" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                ></iframe>
+                """
+            ),
+            # Diseño compacto que se fija al final de la pantalla de forma permanente
+            class_name="fixed bottom-0 left-0 right-0 bg-black/90 shadow-2xl z-50 h-20 overflow-hidden"
+        )
+    )

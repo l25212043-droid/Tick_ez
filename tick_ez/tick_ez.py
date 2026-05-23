@@ -1,6 +1,6 @@
 import reflex as rx
 from tick_ez.states.ticket_state import TicketState
-from tick_ez.components.navbar import navbar
+from tick_ez.components.navbar import navbar, reproductor_global
 from tick_ez.components.hero import hero
 from tick_ez.components.eventos_section import eventos_section
 from tick_ez.components.comprar_section import comprar_section
@@ -72,6 +72,7 @@ def index() -> rx.Component:
             ("whatsapp", whatsapp_section()),
             inicio_view(),
         ),
+        reproductor_global(),
         compra_dialog(),
         confirmacion_dialog(),
         login_dialog(),

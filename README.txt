@@ -70,4 +70,3 @@ Para interfaz de usuario (UI) usa funciones de Python que
 representan componentes creando variables (Vars) y 
 funciones (Events) que manejan la logica y actualizan 
 la interfaz.
-============================================================
