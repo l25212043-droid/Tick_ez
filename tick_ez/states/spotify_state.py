@@ -1,9 +1,5 @@
 import reflex as rx
 from typing import TypedDict
-import reflex as rx
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-
 
 
 class Playlist(TypedDict):
@@ -18,63 +14,113 @@ class Playlist(TypedDict):
     duracion: str
     canciones: int
 
-class CancionReal(TypedDict):
-    id: str
-    titulo: str
-    artista: str
-    album_img: str
-    embed_url: str
 
 class SpotifyState(rx.State):
-    CLIENT_ID: str = "4edb4ef5d0294eb895ffa2fdbff461ce"
-    CLIENT_SECRET: str = "eab82e3c09aa4d3da1d34e5aa6931c44"
-    
-    buscar_texto: str = ""
-    resultados_busqueda: list[CancionReal] = []
-    
-    # Guarda la URL del track seleccionado para reproducir en el Iframe
-    track_embed_actual: str = "https://open.spotify.com/embed/track/4PTG3Z6ehGkBF3zI7YgR63" # Track por defecto (ej. Blinding Lights)
+    playlist_seleccionada_id: str = "indie-fest-2026"
+    playlists: list[Playlist] = [
+        {
+            "id": "indie-fest-2026",
+            "nombre": "Indie Fest 2026",
+            "descripcion": "Lo mejor del indie latino para el Festival Indie Norte",
+            "autor": "Tick_EZ Curators",
+            "embed_url": "https://open.spotify.com/embed/playlist/37i9dQZF1DX2sUQwD7tbmL?utm_source=generator&theme=0",
+            "color": "violet",
+            "icono": "music",
+            "evento_categoria": "Concierto",
+            "duracion": "3h 24min",
+            "canciones": 48,
+        },
+        {
+            "id": "rock-espanol",
+            "nombre": "Rock en tu Idioma",
+            "descripcion": "Clásicos del rock en español: Caifanes, Café Tacvba y más",
+            "autor": "Tick_EZ Curators",
+            "embed_url": "https://open.spotify.com/embed/playlist/37i9dQZF1DX10zKzsJ2jva?utm_source=generator&theme=0",
+            "color": "blue",
+            "icono": "guitar",
+            "evento_categoria": "Concierto",
+            "duracion": "4h 10min",
+            "canciones": 62,
+        },
+        {
+            "id": "electronica-tour",
+            "nombre": "Noche Eléctrica",
+            "descripcion": "Beats electrónicos para acompañar el tour de Luna Estelar",
+            "autor": "Luna Estelar",
+            "embed_url": "https://open.spotify.com/embed/playlist/37i9dQZF1DX4dyzvuaRJ0n?utm_source=generator&theme=0",
+            "color": "teal",
+            "icono": "zap",
+            "evento_categoria": "Concierto",
+            "duracion": "2h 45min",
+            "canciones": 38,
+        },
+        {
+            "id": "broadway-clasicos",
+            "nombre": "Broadway Esenciales",
+            "descripcion": "Bandas sonoras del teatro musical",
+            "autor": "Tick_EZ Curators",
+            "embed_url": "https://open.spotify.com/embed/playlist/37i9dQZF1DWUoY6Ih7vsxr?utm_source=generator&theme=0",
+            "color": "amber",
+            "icono": "drama",
+            "evento_categoria": "Teatro",
+            "duracion": "3h 50min",
+            "canciones": 55,
+        },
+        {
+            "id": "anime-soundtrack",
+            "nombre": "Anime Soundtrack",
+            "descripcion": "Lo mejor de openings y soundtracks para Anime Expo",
+            "autor": "Tick_EZ Curators",
+            "embed_url": "https://open.spotify.com/embed/playlist/37i9dQZF1DWUa8ZRTfalHk?utm_source=generator&theme=0",
+            "color": "violet",
+            "icono": "sparkles",
+            "evento_categoria": "Convención",
+            "duracion": "5h 20min",
+            "canciones": 80,
+        },
+        {
+            "id": "tech-focus",
+            "nombre": "TechSummit Focus",
+            "descripcion": "Música ambient para conferencias y networking",
+            "autor": "Tick_EZ Curators",
+            "embed_url": "https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ?utm_source=generator&theme=0",
+            "color": "blue",
+            "icono": "laptop",
+            "evento_categoria": "Convención",
+            "duracion": "6h 00min",
+            "canciones": 92,
+        },
+    ]
 
-    def _get_spotify_client(self):
-        """Inicializa el cliente de Spotify de forma segura"""
-        auth_manager = SpotifyClientCredentials(
-            client_id=self.CLIENT_ID, 
-            client_secret=self.CLIENT_SECRET
+    # Mapeo evento -> playlist sugerida
+    evento_playlist_map: dict[str, str] = {
+        "Doja Cat - Scarlet Tour 2026": "indie-fest-2026",
+        "Gorillaz - Getaway World Tour": "rock-espanol",
+        "BTS - Live in Mexico City": "electronica-tour",
+        "The Lion King - El Musical": "broadway-clasicos",
+        "Chicago - El Musical": "broadway-clasicos",
+        "Wicked - Tour Oficial": "broadway-clasicos",
+        "Anime Expo Mexico 2026": "anime-soundtrack",
+        "Comic Con Latam 2026": "anime-soundtrack",
+        "CCXP Mexico 2026": "tech-focus",
+    }
+
+    @rx.var
+    def playlist_actual(self) -> Playlist:
+        for p in self.playlists:
+            if p["id"] == self.playlist_seleccionada_id:
+                return p
+        return self.playlists[0]
+
+    @rx.event
+    def seleccionar_playlist(self, pid: str):
+        self.playlist_seleccionada_id = pid
+        return rx.toast("🎵 Playlist cargada", duration=2000)
+
+    @rx.event
+    def playlist_para_evento(self, nombre_evento: str):
+        pid = self.evento_playlist_map.get(nombre_evento, "indie-fest-2026")
+        self.playlist_seleccionada_id = pid
+        return rx.toast(
+            f"🎶 Playlist sugerida para {nombre_evento}", duration=2500
         )
-        return spotipy.Spotify(auth_manager=auth_manager)
-
-    @rx.event
-    def realizar_busqueda(self, texto: str):
-        """Busca canciones en tiempo real en la API global de Spotify"""
-        self.buscar_texto = texto
-        
-        if len(texto) < 2:
-            self.resultados_busqueda = []
-            return
-
-        try:
-            sp = self._get_spotify_client()
-            # Buscamos los primeros 5 tracks coincidentes
-            results = sp.search(q=texto, limit=5, type='track')
-            tracks = results['tracks']['items']
-            
-            nuevos_resultados = []
-            for track in tracks:
-                nuevos_resultados.append({
-                    "id": track['id'],
-                    "titulo": track['name'],
-                    "artista": track['artists'][0]['name'],
-                    "album_img": track['album']['images'][0]['url'] if track['album']['images'] else "",
-                    "embed_url": f"https://open.spotify.com/embed/track/{track['id']}"
-                })
-            
-            self.resultados_busqueda = nuevos_resultados
-        except Exception as e:
-            print(f"Error conectando a Spotify: {e}")
-            return rx.toast("⚠️ Error al conectar con Spotify API")
-
-    @rx.event
-    def seleccionar_track(self, embed_url: str, titulo: str):
-        """Cambia el reproductor actual a la canción seleccionada"""
-        self.track_embed_actual = embed_url
-        return rx.toast(f"▶️ Cargando en reproductor: {titulo}", duration=2000)
